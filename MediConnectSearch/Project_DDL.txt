@@ -1,0 +1,95 @@
+CREATE TABLE Person (
+	Ssn			CHAR(9)		not null,
+	FirstName 		VARCHAR(20)	not null,
+	MiddleInitial		CHAR(1),
+	LastName		VARCHAR(20)	not null,
+	Language		VARCHAR(30),
+Gender			CHAR(2),
+HouseNo		VARCHAR(30),
+State			VARCHAR(30),
+City			VARCHAR(30),
+Role 			VARCHAR(8)		not null,
+     	CONSTRAINT Person_PK PRIMARY KEY(Ssn)
+);
+
+CREATE TABLE Treatment (
+	TreatmentID		NUMERIC(11,0)	not null,
+	Description		VARCHAR(100),
+	Cost			NUMERIC(11,2),
+	CONSTRAINT Treatment_PK PRIMARY KEY(TreatmentID)
+);
+
+CREATE TABLE Insurance (
+	InsuranceID		CHAR(1)		not null,
+	CompanyName	VARCHAR(30)	not null,
+Plan			VARCHAR(10)	not null,
+	CONSTRAINT Insurance_PK PRIMARY KEY(InsuranceID)
+);
+
+CREATE TABLE Doctor (
+	DoctorID		NUMERIC(11, 0)	not null,
+Specialty		VARCHAR(30)	not null,
+CityOfPractice		VARCHAR(30),
+Ssn			CHAR(9)		not null,
+	Language		VARCHAR(30),
+Gender			CHAR(2),
+CONSTRAINT Doctor_PK PRIMARY KEY(DoctorID),
+CONSTRAINT Doctor_FK1 FOREIGN KEY (Ssn)
+REFERENCES Person(Ssn)
+);
+
+
+
+
+
+CREATE TABLE Patient (
+	Illness	                       VARCHAR(30),
+	PatientID                    NUMERIC(11,0)	not null,
+	Ssn			CHAR(9)		not null,
+	Language		VARCHAR(30),
+Gender			CHAR(2),
+CONSTRAINT Patient_PK PRIMARY KEY(PatientID),
+	CONSTRAINT Patient_FK1 FOREIGN KEY (Ssn)
+REFERENCES Person(Ssn)
+);
+
+
+CREATE TABLE TreatedBy(
+	EncounterNo	           VARCHAR(12)		not null,
+	PatientID                     NUMERIC(11,0)	not null,
+	DoctorID		NUMERIC(11,0)	not null,
+Date_Time	            DATETIME		not null,
+ChiefComplaint		VARCHAR(30),
+Result		            VARCHAR(30),
+TreatmentID		NUMERIC(11,0)	not null,
+CONSTRAINT EncounterNo_PK PRIMARY KEY(EncounterNo),
+	CONSTRAINT TreatedBy_FK1 FOREIGN KEY (DoctorID)
+REFERENCES Doctor(DoctorID),
+CONSTRAINT TreatedBy_FK2 FOREIGN KEY (PatientID)
+REFERENCES Patient(PatientID),
+CONSTRAINT TreatedBy_FK3 FOREIGN KEY (TreatmentID)
+REFERENCES Treatment(TreatmentID)
+);
+
+CREATE TABLE InsuredBy (
+	PolicyID		NUMERIC(12)	not null,
+	GroupID		VARCHAR(12)	not null,
+	ExpDate		DATE			not null,
+	PatientID		NUMERIC(11,0)	not null,
+	InsuranceID		CHAR(1)		not null,
+	CONSTRAINT InsuredBy_PK PRIMARY KEY(PolicyID),
+CONSTRAINT InsuredBy_FK1 FOREIGN KEY (PatientID)
+REFERENCES Patient(PatientID),
+CONSTRAINT InsuredBy_FK2 FOREIGN KEY (InsuranceID)
+REFERENCES Insurance(InsuranceID)
+);
+
+CREATE TABLE Accepts(
+	DoctorID		NUMERIC(11,0)	not null,
+	InsuranceID		CHAR(1)		not null,
+	CONSTRAINT Accepts_PK PRIMARY KEY(DoctorID, InsuranceID),
+CONSTRAINT Accepts_FK1 FOREIGN KEY (DoctorID)
+REFERENCES Doctor(DoctorID),
+CONSTRAINT Accepts_FK2 FOREIGN KEY (InsuranceID)
+REFERENCES Insurance(InsuranceID)
+);
