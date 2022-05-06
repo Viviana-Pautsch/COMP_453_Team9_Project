@@ -23,20 +23,8 @@ class User(db.Model, UserMixin):
         return f"User('{self.username}', '{self.email}')"
 
 
-class Accepts(db.Model):
-    __table__ = db.Model.metadata.tables['accepts']
-
-
 class Doctor(db.Model):
     __table__ = db.Model.metadata.tables['doctor']
-
-
-class Insurance(db.Model):
-    __table__ = db.Model.metadata.tables['insurance']
-
-
-class InsuredBy(db.Model):
-    __table__ = db.Model.metadata.tables['insuredby']
 
 
 class Patient(db.Model):

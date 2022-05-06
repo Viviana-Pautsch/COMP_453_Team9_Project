@@ -9,28 +9,6 @@ from flaskDemo import db
 # from wtforms.fields.html5 import DateField
 
 
-doctor_specialties = Doctor.query.with_entities(Doctor.Specialty).distinct()
-results = list()
-for row in doctor_specialties:
-    rowDict = row._asdict()
-    results.append(rowDict)
-specialty_Choices = sorted([(row['Specialty'], row['Specialty']) for row in results])
-
-language = Doctor.query.with_entities(Doctor.Language).distinct()
-results2 = list()
-for row in language:
-    rowDict = row._asdict()
-    results2.append(rowDict)
-language_Choices = sorted([(row['Language'], row["Language"]) for row in results2])
-
-locations = Doctor.query.with_entities(Doctor.CityOfPractice).distinct()
-results3 = list()
-for row in locations:
-    rowDict = row._asdict()
-    results3.append(rowDict)
-location_Choices = sorted([(row['CityOfPractice'], row['CityOfPractice']) for row in results3])
-
-
 class RegistrationForm(FlaskForm):
     user_id = IntegerField('ID Number', validators=[DataRequired()])
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
@@ -82,6 +60,27 @@ class UpdateAccountForm(FlaskForm):
 
 
 class SearchForm(FlaskForm):
+    doctor_specialties = Doctor.query.with_entities(Doctor.Specialty).distinct()
+    results = list()
+    for row in doctor_specialties:
+        rowDict = row._asdict()
+        results.append(rowDict)
+    specialty_Choices = sorted([(row['Specialty'], row['Specialty']) for row in results])
+
+    language = Doctor.query.with_entities(Doctor.Language).distinct()
+    results2 = list()
+    for row in language:
+        rowDict = row._asdict()
+        results2.append(rowDict)
+    language_Choices = sorted([(row['Language'], row["Language"]) for row in results2])
+
+    locations = Doctor.query.with_entities(Doctor.CityOfPractice).distinct()
+    results3 = list()
+    for row in locations:
+        rowDict = row._asdict()
+        results3.append(rowDict)
+
+    location_Choices = sorted([(row['CityOfPractice'], row['CityOfPractice']) for row in results3])
     specialty = SelectField("Doctor Specialty", choices=specialty_Choices)
     language = SelectField("Language", choices=language_Choices)
     location = SelectField("Location", choices=location_Choices)

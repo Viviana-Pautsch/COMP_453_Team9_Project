@@ -12,18 +12,14 @@ Role 			VARCHAR(8)		not null,
      	CONSTRAINT Person_PK PRIMARY KEY(Ssn)
 );
 
-CREATE TABLE Treatment (
-	TreatmentID		NUMERIC(11,0)	not null,
-	Description		VARCHAR(100),
-	Cost			NUMERIC(11,2),
-	CONSTRAINT Treatment_PK PRIMARY KEY(TreatmentID)
-);
-
-CREATE TABLE Insurance (
-	InsuranceID		CHAR(1)		not null,
-	CompanyName	VARCHAR(30)	not null,
-Plan			VARCHAR(10)	not null,
-	CONSTRAINT Insurance_PK PRIMARY KEY(InsuranceID)
+CREATE TABLE Patient (
+	Illness	                       VARCHAR(30),
+	PatientID                    NUMERIC(11,0)	not null,
+	Ssn			CHAR(9)		not null,
+	Language		VARCHAR(30),
+CONSTRAINT Patient_PK PRIMARY KEY(PatientID),
+	CONSTRAINT Patient_FK1 FOREIGN KEY (Ssn)
+REFERENCES Person(Ssn)
 );
 
 CREATE TABLE Doctor (
@@ -31,27 +27,19 @@ CREATE TABLE Doctor (
 Specialty		VARCHAR(30)	not null,
 CityOfPractice		VARCHAR(30),
 Ssn			CHAR(9)		not null,
-	Language		VARCHAR(30),
-Gender			CHAR(2),
+Language		VARCHAR(30),
 CONSTRAINT Doctor_PK PRIMARY KEY(DoctorID),
 CONSTRAINT Doctor_FK1 FOREIGN KEY (Ssn)
 REFERENCES Person(Ssn)
 );
 
-
-
-
-
-CREATE TABLE Patient (
-	Illness	                       VARCHAR(30),
-	PatientID                    NUMERIC(11,0)	not null,
-	Ssn			CHAR(9)		not null,
-	Language		VARCHAR(30),
-Gender			CHAR(2),
-CONSTRAINT Patient_PK PRIMARY KEY(PatientID),
-	CONSTRAINT Patient_FK1 FOREIGN KEY (Ssn)
-REFERENCES Person(Ssn)
+CREATE TABLE Treatment (
+	TreatmentID		NUMERIC(11,0)	not null,
+	Description		VARCHAR(100),
+	Cost			NUMERIC(11,2),
+	CONSTRAINT Treatment_PK PRIMARY KEY(TreatmentID)
 );
+
 
 
 CREATE TABLE TreatedBy(
@@ -71,25 +59,74 @@ CONSTRAINT TreatedBy_FK3 FOREIGN KEY (TreatmentID)
 REFERENCES Treatment(TreatmentID)
 );
 
-CREATE TABLE InsuredBy (
-	PolicyID		NUMERIC(12)	not null,
-	GroupID		VARCHAR(12)	not null,
-	ExpDate		DATE			not null,
-	PatientID		NUMERIC(11,0)	not null,
-	InsuranceID		CHAR(1)		not null,
-	CONSTRAINT InsuredBy_PK PRIMARY KEY(PolicyID),
-CONSTRAINT InsuredBy_FK1 FOREIGN KEY (PatientID)
-REFERENCES Patient(PatientID),
-CONSTRAINT InsuredBy_FK2 FOREIGN KEY (InsuranceID)
-REFERENCES Insurance(InsuranceID)
-);
 
-CREATE TABLE Accepts(
-	DoctorID		NUMERIC(11,0)	not null,
-	InsuranceID		CHAR(1)		not null,
-	CONSTRAINT Accepts_PK PRIMARY KEY(DoctorID, InsuranceID),
-CONSTRAINT Accepts_FK1 FOREIGN KEY (DoctorID)
-REFERENCES Doctor(DoctorID),
-CONSTRAINT Accepts_FK2 FOREIGN KEY (InsuranceID)
-REFERENCES Insurance(InsuranceID)
-);
+INSERT INTO Person(Ssn,FirstName,LastName,Language,Gender,HouseNo, State,City,Role)
+VALUES ('12345671','John','Adams','French','M','121','Illinois','Chicago','Patient'),
+('12345672','Emily','Brady','English','F','122', 'Texas','Houston','Patient'),
+('12345673','Thomas','Kyro','German','M','123', 'Florida','Miami','Patient'),
+('12345674','Jessica','Sao','Mandarin','F','124', 'Texas','Dallas','Patient'),
+('12345675','Juan','Garcia','Spanish','M','125', 'Texas','Austin','Patient'),
+('12345676','Kevin','Le','Vietnamese','M','126','California','Los Angeles','Patient'),
+('12345677','Kyle','Kim','Korean','M','127','New York','New York City','Patient'),
+('12345678','James','Tran','Vietnamese','M','128', 'Colorado','Denver','Patient'),
+('12345679','Tammy','Lo','Taiwanese','F','129', 'Washington','Seattle','Patient'),
+('12345661','Vivian','John','English','F','130', 'Arizona','Phoenix','Patient'),
+('031001231','Josh','Nguyen','Vietnamese','M','131', 'Illinois','Chicago','Doctor'),
+('031001232','Kim','Tan','Mandarin','F','132','Texas','Dallas','Doctor'),
+('031001233','Krystle','End','Taiwanese','F','133', 'Washington','Seattle','Doctor'),
+('031001234','Charles','Lopez','Spanish','M','134', 'Massachusetts','Boston','Doctor'),
+('031001235','Eddie','Todd','English','M','135', 'Indiana','Indianapolis','Doctor'),
+('031001236','Michelle','Garcia','Spanish','F','136', 'Texas','Austin','Doctor'),
+('031001237','Karen','Nguyen','Vietnamese','F','137', 'Colorado','Denver','Doctor'),
+('031001238','Brandon','Travis','French','M','138', 'Florida','Miami','Doctor'),
+('031001239','Jamie','Park','Korean','M','139', 'New York','New York City ','Doctor'),
+('031001240','Jeff','King','English','M','140', 'Arizona','Phoenix','Doctor');
+
+INSERT INTO Patient(PatientID,Illness,Ssn,Language) VALUES (1000,'Cancer','12345671','French'),
+(1001,'Asthma','12345672','English'),
+(1002,'Arthritis','12345673','German'),
+(1003,'Depression','12345674','Mandarin'),
+(1004,'Stroke','12345675','Spanish'),
+(1005,'Osteoperosis','12345676','Vietnamese'),
+(1006,'Diabetes','12345677','Korean'),
+(1007,'Lung Cancer','12345678','Vietnamese'),
+(1008,'Heart Disease','12345679','Taiwanese'),
+(1009,'Lung Cancer','12345661','English');
+
+
+INSERT INTO Doctor(DoctorID,Specialty,Ssn,CityOfPractice,Language) VALUES (731,'Family Medicine','031001231','Chicago','Vietnamese'),
+(732,'Internal Medicine','031001232','Dallas','Mandarin'),
+(733,'Emergency Medicine','031001233','Seattle','Taiwanese'),
+(734,'Neurology','031001234','Boston','Spanish'),
+(735,'Pediatrics','031001235','Indianapolis','English'),
+(736,'Surgery','031001236','Austin','Spanish'),
+(737,'Geriatrics','031001237','Denver','Vietnamese'),
+(738,'Plastic Surgery','031001238','Miami','French'),
+(739,'Gynecology','031001239','New York','Korean'),
+(740,'Oncology','031001240','Phoenix','English');
+
+
+
+INSERT INTO Treatment(TreatmentID,Description,Cost)
+VALUES ('551','Cancer cells going through normal tissue','10000.00'),
+('552','Plaque build up in the walls of the arteries','50000.00'),
+('553','Blood clot lodges in cerebral artery','100000.00');
+
+INSERT INTO TreatedBy(EncounterNo,PatientID,DoctorID,TreatmentID,Result) VALUES ('123',1000,740,'551','Cured'),
+('124',1008,736,'552','Not Cured'),
+('125',1004,733,'553','Cured');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
